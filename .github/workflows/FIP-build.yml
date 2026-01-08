@@ -11,7 +11,7 @@ on:
       MODEL:
         description: 'Model selection'
         required: true
-        default: 'philips_hy3000'
+        default: 'cmcc_a10'
         type: string
       FIP_VERSION: 
         description: 'FIP versions (comma-separated, e.g. 2022,2023,2024,2025/all)'
@@ -21,7 +21,7 @@ on:
       REPO_URL:
         description: 'Source repository'
         required: true
-        default: 'https://github.com/kavass168/bl-mt798x-oss-stock'
+        default: 'https://github.com/Yuzhii0718/bl-mt798x-dhcpd'
         type: string
       REPO_BRANCH:
         description: 'Repository branch'
@@ -107,18 +107,12 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-          sudo -E apt -yqq purge firefox
-          sudo -E apt -yqq update
-          sudo -E apt -yqq full-upgrade
-          sudo -E apt -yqq autoremove --purge
-          sudo -E apt -yqq autoclean
-          sudo -E apt -yqq clean
-          sudo -E apt -yqq install dos2unix python3-netifaces libfuse-dev
-          sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_environment.sh)'
-          sudo -E systemctl daemon-reload
-          sudo -E timedatectl set-timezone "Asia/Shanghai"
-          sudo mkdir -p /workdir
-          sudo chown $USER:$GROUPS /workdir
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/depends/${{ matrix.os }})
+        sudo -E apt-get -qq install rename
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
 
     - name: 清理磁盘空间(local2)
       if: github.event.inputs.save_disk == 'true' && !cancelled()
@@ -287,11 +281,9 @@ jobs:
         for version in "${SUPPORTED_VERSIONS[@]}"; do
           echo "正在编译${version}版本FIP..."
           if [ "${{ github.event.inputs.MULTI_LAYOUT }}" = "true" ]; then
-            SOC=mt7981 BOARD=${{ github.event.inputs.MODEL }} VERSION=${version} MULTI_LAYOUT=1 ./build.sh
-            # 2>&1 | tee "output/build-${{ github.event.inputs.MODEL }}-${version}.log"
+            SOC=mt7981 BOARD=${{ github.event.inputs.MODEL }} VERSION=${version} MULTI_LAYOUT=1 ./build.sh 2>&1 | tee "output/build-${{ github.event.inputs.MODEL }}-${version}.log"
           else
-            SOC=mt7981 BOARD=${{ github.event.inputs.MODEL }} VERSION=${version} ./build.sh
-            # 2>&1 | tee "output/build-${{ github.event.inputs.MODEL }}-${version}.log"
+            SOC=mt7981 BOARD=${{ github.event.inputs.MODEL }} VERSION=${version} ./build.sh 2>&1 | tee "output/build-${{ github.event.inputs.MODEL }}-${version}.log"
           fi
           mkdir -p "temp_output_${version}"
           if [ -d "output" ]; then
