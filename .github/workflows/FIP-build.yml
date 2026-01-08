@@ -281,9 +281,11 @@ jobs:
         for version in "${SUPPORTED_VERSIONS[@]}"; do
           echo "正在编译${version}版本FIP..."
           if [ "${{ github.event.inputs.MULTI_LAYOUT }}" = "true" ]; then
-            SOC=mt7981 BOARD=${{ github.event.inputs.MODEL }} VERSION=${version} MULTI_LAYOUT=1 ./build.sh 2>&1 | tee "output/build-${{ github.event.inputs.MODEL }}-${version}.log"
+            SOC=mt7981 BOARD=${{ github.event.inputs.MODEL }} VERSION=${version} MULTI_LAYOUT=1 ./build.sh
+            # 2>&1 | tee "output/build-${{ github.event.inputs.MODEL }}-${version}.log"
           else
-            SOC=mt7981 BOARD=${{ github.event.inputs.MODEL }} VERSION=${version} ./build.sh 2>&1 | tee "output/build-${{ github.event.inputs.MODEL }}-${version}.log"
+            SOC=mt7981 BOARD=${{ github.event.inputs.MODEL }} VERSION=${version} ./build.sh
+            # 2>&1 | tee "output/build-${{ github.event.inputs.MODEL }}-${version}.log"
           fi
           mkdir -p "temp_output_${version}"
           if [ -d "output" ]; then
