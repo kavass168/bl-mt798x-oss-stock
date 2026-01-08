@@ -59,9 +59,12 @@ else
 	fi
 fi
 
-echo "$ATF_DIR/configs/$ATF_CFG"
-echo "$UBOOT_DIR/configs/$UBOOT_CFG"
-
+for file in "$ATF_DIR/configs/$ATF_CFG" "$UBOOT_DIR/configs/$UBOOT_CFG"; do
+	if [ ! -f "$file" ]; then
+		echo "$file not found!"
+		exit 1
+	fi
+done
 
 echo "Building for: ${SOC}_${BOARD}, fixed-mtdparts: $fixedparts, multi-layout: $multilayout"
 echo "u-boot dir: $UBOOT_DIR"
