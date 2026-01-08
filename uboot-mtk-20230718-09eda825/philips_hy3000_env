@@ -1,2 +1,0 @@
-bootargs=root=/dev/fit0 rootwait
-bootconf=config-1#mt7981b-philips-hy3000
