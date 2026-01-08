@@ -43,8 +43,8 @@ ATF_CFG_SOURCE="${SOC}_${BOARD}_defconfig"
 UBOOT_CFG_SOURCE="${SOC}_${BOARD}_defconfig"
 
 # 为 sources的配置文件做备份
-#ATF_CFG="${ATF_CFG:-$ATF_CFG_SOURCE}"
-#UBOOT_CFG="${UBOOT_CFG:-$UBOOT_CFG_SOURCE}"
+ATF_CFG="${ATF_CFG:-$ATF_CFG_SOURCE}"
+UBOOT_CFG="${UBOOT_CFG:-$UBOOT_CFG_SOURCE}"
 
 if grep -Eq "CONFIG_FLASH_DEVICE_EMMC=y|_BOOT_DEVICE_EMMC=y" $ATF_DIR/configs/$ATF_CFG ; then
 	# No fixed-mtdparts or multilayout for EMMC
